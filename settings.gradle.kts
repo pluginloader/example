@@ -3,8 +3,9 @@ pluginManagement {
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
-        maven{url "https://repo.implario.dev/public"}
+        maven{url = uri("https://repo.implario.dev/public")}
     }
 }
 
-rootProject.name = 'example'
+rootProject.name = "example"
+include("upload")

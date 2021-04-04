@@ -11,15 +11,15 @@ import pluginloader.api.Listener
 import pluginloader.api.Sender
 
 @Conf
-private val config = Config()
+internal val config = Config()
 
 @Listener(priority = EventPriority.LOW)
-private fun onJoin(event: PlayerJoinEvent){
+internal fun onJoin(event: PlayerJoinEvent){
     event.player.sendMessage(config.onJoin)
 }
 
 @Command("examplecmd", op = true)//Только для опок
-private fun cmd(sender: Sender, args: Args){
+internal fun cmd(sender: Sender, args: Args){
     if(args.isEmpty()){
         sender.sendMessage(config.exampleCmdNeedArg)
         return
@@ -28,12 +28,12 @@ private fun cmd(sender: Sender, args: Args){
 }
 
 @Command("exampleplayer")
-private fun examplepl(player: Player){
+internal fun examplepl(player: Player){
     player.sendMessage(config.examplePlayer)
 }
 
 @Serializable
-private class Config(
+internal class Config(
     val onJoin: String = "onJoin hello",
     val exampleCmdNeedArg: String = "usage: /examplecmd [arg]",
     val exampleCmd: String = "hello %arg%",
