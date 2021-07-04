@@ -1,62 +1,28 @@
 plugins{
-    kotlin("jvm") version "1.4.31"
-    kotlin("plugin.serialization") version "1.4.31"
-    //Подключает mavenLocal & mavenCentral, управляет зависимостями плагинов
-    //Kotlin, kotlinx.setialization отсюда же, обязателен
-    id("pluginloader.api") version "1.8.22"
-    //Подключает paper-api
-    id("pluginloader.paper") version "1.8.22"
-    id("org.hidetake.ssh") version "2.10.1" apply false
+    kotlin("jvm") version "1.5.20"
+    kotlin("plugin.serialization") version "1.5.20"
     id("maven-publish")
 }
 
+//Подключает проект с всякими dependency и прочим
+evaluationDependsOn("plu")
+
+group = "pluginloader"
+version = "1.0.0"
+
 repositories{
+    //Репозиторий всех pluginloader:...
     maven{url = uri("https://repo.implario.dev/public")}
 }
 
-//Превращается в dependencies{dependency "pluginloader:configs:1.0.0"}
-plu.plu("configs")
-//Поддерживается так же "configs:1.0.0"
+//Подключает плагин configs
+plu("configs")
+//plu("plu1", "plu2", etc)
 
 dependencies{
 
 }
 
-task("rename") {
-    doLast {
-        val p = File("").absoluteFile.name
-        val pl = File("src/main/kotlin/${rootProject.name}/Plugin.kt")
-        pl.writeText(pl.readText().replace(rootProject.name, p))
-        File("src/main/kotlin/${rootProject.name}").renameTo(File("src/main/kotlin/$p"))
-        val settings = File("settings.gradle.kts")
-        settings.writeText(settings.readText().replace(rootProject.name, p))
-    }
-}
-
-tasks.withType<org.gradle.jvm.tasks.Jar>{
-    archiveFileName.set("${rootProject.name}.jar")
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-    kotlinOptions.useIR = true
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven"){
-            from(components["java"])
-        }
-    }
-
-    repositories {
-        maven {
-            url = uri(System.getenv("PLU_PUBLIC_URL"))
-
-            credentials {
-                username = System.getenv("PLU_PUBLIC_PUSH_USER")
-                password = System.getenv("PLU_PUBLIC_PUSH_PASSWORD")
-            }
-        }
-    }
+fun plu(vararg plugins: String){
+    plugins.forEach{project.dependencies.add("dependency", "pluginloader:${if(!it.contains(':')) "$it:1.0.0" else it}")}
 }

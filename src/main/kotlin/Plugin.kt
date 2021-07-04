@@ -10,14 +10,16 @@ import pluginloader.api.Command
 import pluginloader.api.Listener
 import pluginloader.api.Sender
 
+//Лучше использовать internal и var для совместимости с java 11+
 @Conf
-internal val config = Config()
+internal var config = Config()
 
 @Listener(priority = EventPriority.LOW)
 internal fun onJoin(event: PlayerJoinEvent){
     event.player.sendMessage(config.onJoin)
 }
 
+// '/examplecmd'
 @Command("examplecmd", op = true)//Только для опок
 internal fun cmd(sender: Sender, args: Args){
     if(args.isEmpty()){
@@ -26,6 +28,7 @@ internal fun cmd(sender: Sender, args: Args){
     }
     sender.sendMessage(config.exampleCmd)
 }
+
 
 @Command("exampleplayer")
 internal fun examplepl(player: Player){
